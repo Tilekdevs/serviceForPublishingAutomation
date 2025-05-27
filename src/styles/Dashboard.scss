@@ -1,0 +1,41 @@
+.dashboard-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #f7fff9;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0, 128, 0, 0.1);
+  position: relative;
+}
+
+.dashboard-container h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #2f7034;
+  text-align: center;
+}
+
+.dashboard-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #d2ead9;
+}
+
+.logout-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background: #c0392b;
+}
