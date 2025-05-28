@@ -1,0 +1,53 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #f4f7fa;
+  padding: 20px;
+}
+
+.home-header {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.home-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.home-subtitle {
+  font-size: 18px;
+  color: #666;
+}
+
+.home-info {
+  max-width: 600px;
+  text-align: center;
+}
+
+.home-info-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.home-info-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .home-title {
+    font-size: 28px;
+  }
+
+  .home-info {
+    max-width: 90%;
+  }
+}

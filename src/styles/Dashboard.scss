@@ -39,3 +39,59 @@
 .logout-button:hover {
   background: #c0392b;
 }
+
+.edit-post-modal {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  max-width: 90vw;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  
+  display: flex;
+  flex-direction: column;
+  height: 220px; /* или нужная высота */
+}
+
+.edit-post-modal h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  color: #2f7034;
+}
+
+.edit-post-modal textarea {
+  flex-grow: 1; /* занимает всё доступное пространство */
+  resize: none;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.edit-post-modal .buttons {
+  margin-top: auto; /* толкает кнопки вниз */
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-post-modal .buttons button {
+  background-color: #2f7034;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.edit-post-modal .buttons button:hover {
+  background-color: #256022;
+}

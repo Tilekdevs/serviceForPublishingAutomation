@@ -1,91 +1,162 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
-import ChannelList from '../components/ChannelList'
-import ChannelForm from '../components/ChannelForm'
-import PostForm from '../components/PostForm'
+import { Navigate } from 'react-router-dom'
+import PostList from '../components/PostList'
 import '../styles/Dashboard.scss'
 
 function Dashboard({ user, onLogout }) {
-  const [posts, setPosts] = useState([])
-  const [channels, setChannels] = useState([])
+	const [channels, setChannels] = useState([])
+	const [posts, setPosts] = useState([])
+	const [editingPost, setEditingPost] = useState(null)
+	const [editContent, setEditContent] = useState('')
+	const [editMediaType, setEditMediaType] = useState('')
 
-  const fetchChannels = async () => {
-    try {
-      const res = await fetch(`http://77.105.133.23:8087/api/channels/${user.id}`)
-      const data = await res.json()
-      setChannels(Array.isArray(data) ? data : data ? [data] : [])
-    } catch (err) {
-      console.error('Ошибка загрузки каналов:', err)
-    }
-  }
+	useEffect(() => {
+		if (!user?.userId) return
 
-  useEffect(() => {
-    if (!user?.id) return
+		const fetchData = async () => {
+			try {
+				const [channelRes, postRes] = await Promise.all([
+					fetch(`http://localhost:8087/api/channels/${user.userId}`),
+					fetch(`http://localhost:8087/api/posts/${user.userId}`),
+				])
 
-    const fetchData = async () => {
-      try {
-        const [postRes, channelRes] = await Promise.all([
-          fetch(`http://77.105.133.23:8087/api/posts/${user.id}`),
-          fetch(`http://77.105.133.23:8087/api/channels/${user.id}`),
-        ])
+				const channelData = await channelRes.json()
+				const postData = await postRes.json()
 
-        const postData = await postRes.json()
-        const channelData = await channelRes.json()
+				setChannels(
+					Array.isArray(channelData)
+						? channelData
+						: channelData
+						? [channelData]
+						: [],
+				)
+				setPosts(Array.isArray(postData) ? postData : [])
+			} catch (error) {
+				console.error('Ошибка загрузки:', error)
+			}
+		}
 
-        setPosts(Array.isArray(postData) ? postData : [])
-        setChannels(Array.isArray(channelData) ? channelData : channelData ? [channelData] : [])
-      } catch (err) {
-        console.error('Ошибка загрузки данных:', err)
-      }
-    }
+		fetchData()
+	}, [user?.userId])
 
-    fetchData()
-  }, [user?.id])
+	const handleDeleteChannel = async channelId => {
+		try {
+			await fetch(`http://localhost:8087/api/channels/${user.userId}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ channelId }),
+			})
+			setChannels(prev => prev.filter(c => c.channelId !== channelId))
+		} catch (error) {
+			console.error('Ошибка удаления канала:', error)
+		}
+	}
 
-  const handleDeleteChannel = async (channelId) => {
-    try {
-      await fetch(`http://77.105.133.23:8087/api/channels/${user.id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ channelId }),
-      })
-      setChannels(channels.filter((ch) => ch.channelId !== channelId))
-    } catch (error) {
-      console.error('Ошибка удаления канала:', error)
-    }
-  }
+	const handleDeletePost = async postId => {
+		try {
+			await fetch(`http://localhost:8087/api/posts/${user.userId}/${postId}`, {
+				method: 'DELETE',
+			})
+			setPosts(prev => prev.filter(p => p.id !== postId))
+		} catch (error) {
+			console.error('Ошибка удаления поста:', error)
+		}
+	}
 
-  return (
-    <div className="dashboard-container">
-      <button
-        className="logout-button"
-        onClick={() => {
-          localStorage.removeItem('user')
-          onLogout()
-        }}
-      >
-        Выйти
-      </button>
+	const handleEditPost = post => {
+		setEditingPost(post)
+		setEditContent(post.content)
+		setEditMediaType(post.mediaType || '')
+	}
 
-      <h1>Панель управления</h1>
+	const handleSaveEdit = async () => {
+		if (!editingPost) return
 
-      <div className="dashboard-section">
-        <PostForm
-          userId={user.id}
-          channels={channels}
-          onPostCreated={(newPost) => setPosts([...posts, newPost])}
-        />
-      </div>
+		try {
+			const res = await fetch(
+				`http://localhost:8087/api/posts/${user.userId}/${editingPost.id}`,
+				{
+					method: 'PUT', // или PATCH, зависит от API
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						content: editContent,
+						mediaType: editMediaType,
+					}),
+				},
+			)
 
-      <div className="dashboard-section">
-        <ChannelForm userId={user.id} onChannelAdded={fetchChannels} />
-      </div>
+			if (!res.ok) throw new Error('Ошибка при сохранении поста')
 
-      <div className="dashboard-section">
-        <ChannelList channels={channels} onDelete={handleDeleteChannel} />
-      </div>
-    </div>
-  )
+			const updatedPost = await res.json()
+
+			setPosts(prev =>
+				prev.map(p => (p.id === updatedPost.id ? updatedPost : p)),
+			)
+
+			setEditingPost(null)
+		} catch (error) {
+			alert('Ошибка: ' + error.message)
+		}
+	}
+
+	const handleCancelEdit = () => {
+		setEditingPost(null)
+	}
+
+	if (!user?.userId) return <Navigate to='/login' />
+
+	return (
+		<div className='dashboard-container'>
+			<button className='logout-button' onClick={onLogout}>
+				Выйти
+			</button>
+			<h1>Панель редактирования</h1>
+
+			<h2>Пользователь: {user.telegramId}</h2>
+
+			<section>
+				<h3>Канал</h3>
+				{channels.length === 0 ? (
+					<p>Нет подключенных каналов</p>
+				) : (
+					<ul>
+						{channels.map(channel => (
+							<li key={channel.id}>
+								<span>{channel.channelId}</span>
+								<button onClick={() => handleDeleteChannel(channel.channelId)}>
+									Удалить
+								</button>
+							</li>
+						))}
+					</ul>
+				)}
+			</section>
+
+			<section>
+				<PostList
+					posts={posts}
+					onDelete={handleDeletePost}
+					onEdit={handleEditPost}
+				/>
+			</section>
+
+			{editingPost && (
+				<div className='edit-post-modal'>
+					<h3>Редактирование поста</h3>
+					<textarea
+						value={editContent}
+						onChange={e => setEditContent(e.target.value)}
+						rows={4}
+					/>
+					<div className='buttons'>
+						<button onClick={handleSaveEdit}>Сохранить</button>
+						<button onClick={handleCancelEdit}>Отмена</button>
+					</div>
+				</div>
+			)}
+		</div>
+	)
 }
 
 export default Dashboard
