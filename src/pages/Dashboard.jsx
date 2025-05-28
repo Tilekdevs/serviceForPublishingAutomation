@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import PostList from '../components/PostList'
+import PostForm from '../components/PostForm'
 import '../styles/Dashboard.scss'
 
 function Dashboard({ user, onLogout }) {
@@ -77,7 +78,7 @@ function Dashboard({ user, onLogout }) {
 			const res = await fetch(
 				`http://localhost:8087/api/posts/${user.userId}/${editingPost.id}`,
 				{
-					method: 'PUT', // или PATCH, зависит от API
+					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						content: editContent,
@@ -100,8 +101,32 @@ function Dashboard({ user, onLogout }) {
 		}
 	}
 
+	const handlePublishPost = async postId => {
+		try {
+			const res = await fetch(
+				`http://localhost:8087/api/posts/${user.userId}/${postId}/publish`,
+				{
+					method: 'POST',
+				},
+			)
+			if (!res.ok) throw new Error('Ошибка при публикации поста')
+
+			const updatedPost = await res.json()
+
+			setPosts(prev =>
+				prev.map(p => (p.id === updatedPost.id ? updatedPost : p)),
+			)
+		} catch (error) {
+			alert('Ошибка публикации: ' + error.message)
+		}
+	}
+
 	const handleCancelEdit = () => {
 		setEditingPost(null)
+	}
+
+	const handlePostCreated = newPost => {
+		setPosts(prev => [newPost, ...prev])
 	}
 
 	if (!user?.userId) return <Navigate to='/login' />
@@ -111,12 +136,13 @@ function Dashboard({ user, onLogout }) {
 			<button className='logout-button' onClick={onLogout}>
 				Выйти
 			</button>
+
 			<h1>Панель редактирования</h1>
 
-			<h2>Пользователь: {user.telegramId}</h2>
+			<h2>Пользователь: @{user.telegramUsername}</h2>
 
 			<section>
-				<h3>Канал</h3>
+				<h3>Каналы:</h3>
 				{channels.length === 0 ? (
 					<p>Нет подключенных каналов</p>
 				) : (
@@ -134,10 +160,19 @@ function Dashboard({ user, onLogout }) {
 			</section>
 
 			<section>
+				<PostForm
+					userId={user.userId}
+					channels={channels}
+					onPostCreated={handlePostCreated}
+				/>
+			</section>
+
+			<section>
 				<PostList
 					posts={posts}
 					onDelete={handleDeletePost}
 					onEdit={handleEditPost}
+					onPublish={handlePublishPost}
 				/>
 			</section>
 
@@ -148,6 +183,12 @@ function Dashboard({ user, onLogout }) {
 						value={editContent}
 						onChange={e => setEditContent(e.target.value)}
 						rows={4}
+					/>
+					<input
+						type='text'
+						value={editMediaType}
+						onChange={e => setEditMediaType(e.target.value)}
+						placeholder='Тип медиа (например: image, video)'
 					/>
 					<div className='buttons'>
 						<button onClick={handleSaveEdit}>Сохранить</button>
