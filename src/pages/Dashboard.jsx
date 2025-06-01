@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
 import PostList from '../components/PostList'
 import PostForm from '../components/PostForm'
 import '../styles/Dashboard.scss'
@@ -128,8 +127,6 @@ function Dashboard({ user, onLogout }) {
 	const handlePostCreated = newPost => {
 		setPosts(prev => [newPost, ...prev])
 	}
-
-	if (!user?.userId) return <Navigate to='/login' />
 
 	return (
 		<div className='dashboard-container'>
