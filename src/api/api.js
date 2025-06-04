@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://77.105.133.23:8087/swagger-ui/index.html#/',
+  baseURL: 'http://localhost:8087/api',
 });
 
 // Авторизация
