@@ -1,19 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Home.scss';
+import { useNavigate } from 'react-router-dom'
+import '../styles/Home.scss'
 
 function Home({ user }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    // Перенаправление в зависимости от статуса авторизации
+  const handleClick = () => {
     if (user?.userId) {
-      navigate('/dashboard');
+      navigate('/dashboard')
     } else {
-      navigate('/login');
+      navigate('/login')
     }
-  }, [user?.userId, navigate]);
+  }
 
   return (
     <div className="home-page">
@@ -26,11 +24,14 @@ function Home({ user }) {
       <section className="home-info">
         <h2 className="home-info-title">Как начать?</h2>
         <p className="home-info-text">
-          Для входа используйте ваш Telegram ID и пароль, установленный через команду /password в нашем Telegram-боте. Начните прямо сейчас!
+          Для входа используйте ваш Telegram ID и пароль, установленный через команду <b>/password</b> в нашем Telegram-боте.
         </p>
+        <button className="home-login-button" onClick={handleClick}>
+          {user?.userId ? 'Перейти в панель' : 'Войти'}
+        </button>
       </section>
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home

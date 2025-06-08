@@ -181,12 +181,6 @@ function Dashboard({ user, onLogout }) {
 						onChange={e => setEditContent(e.target.value)}
 						rows={4}
 					/>
-					<input
-						type='text'
-						value={editMediaType}
-						onChange={e => setEditMediaType(e.target.value)}
-						placeholder='Тип медиа (например: image, video)'
-					/>
 					<div className='buttons'>
 						<button onClick={handleSaveEdit}>Сохранить</button>
 						<button onClick={handleCancelEdit}>Отмена</button>
