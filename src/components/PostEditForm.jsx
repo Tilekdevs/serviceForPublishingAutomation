@@ -22,7 +22,7 @@ function PostEditForm({ post, onSave, onCancel }) {
     if (!publishAt) return setError('Укажите дату публикации')
 
     try {
-      const res = await fetch(`http://localhost:8087/api/posts/${post.userId}/${post.id}`, {
+      const res = await fetch(`api/posts/${post.userId}/${post.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, publishAt, mediaType })

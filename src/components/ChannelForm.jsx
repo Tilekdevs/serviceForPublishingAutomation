@@ -33,7 +33,7 @@ function ChannelForm({ userId, onChannelAdded }) {
 			const token = user?.token || ''
 
 			const res = await fetch(
-				`http://localhost:8087/api/channels/${userId}`,
+				`/api/channels/${userId}`,
 				{
 					method: 'POST',
 					headers: {
