@@ -17,8 +17,8 @@ function Dashboard({ user, onLogout }) {
 		const fetchData = async () => {
 			try {
 				const [channelRes, postRes] = await Promise.all([
-					fetch(`http://localhost:8087/api/channels/${user.userId}`),
-					fetch(`http://localhost:8087/api/posts/${user.userId}`),
+					fetch(`/api/channels/${user.userId}`),
+					fetch(`/api/posts/${user.userId}`),
 				])
 
 				const channelData = await channelRes.json()
@@ -42,7 +42,7 @@ function Dashboard({ user, onLogout }) {
 
 	const handleDeleteChannel = async channelId => {
 		try {
-			await fetch(`http://localhost:8087/api/channels/${user.userId}`, {
+			await fetch(`/api/channels/${user.userId}`, {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ channelId }),
@@ -55,7 +55,7 @@ function Dashboard({ user, onLogout }) {
 
 	const handleDeletePost = async postId => {
 		try {
-			await fetch(`http://localhost:8087/api/posts/${user.userId}/${postId}`, {
+			await fetch(`/api/posts/${user.userId}/${postId}`, {
 				method: 'DELETE',
 			})
 			setPosts(prev => prev.filter(p => p.id !== postId))
@@ -75,7 +75,7 @@ function Dashboard({ user, onLogout }) {
 
 		try {
 			const res = await fetch(
-				`http://localhost:8087/api/posts/${user.userId}/${editingPost.id}`,
+				`/api/posts/${user.userId}/${editingPost.id}`,
 				{
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
@@ -103,7 +103,7 @@ function Dashboard({ user, onLogout }) {
 	const handlePublishPost = async postId => {
 		try {
 			const res = await fetch(
-				`http://localhost:8087/api/posts/${user.userId}/${postId}/publish`,
+				`/api/posts/${user.userId}/${postId}/publish`,
 				{
 					method: 'POST',
 				},
