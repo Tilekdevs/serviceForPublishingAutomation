@@ -1,8 +1,28 @@
-# React + Vite
+**⚠️ Внимание:** на текущий момент **бэкенд отключён**, поэтому проект **не работает полностью**.  
+Этот репозиторий содержит фронтенд-часть (интерфейс), которая ожидает существование API, которого сейчас нет.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## Описание проекта
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Проект служит интерфейсом для автоматизации публикации — клиентский фронтенд, который позволяет управлять публикациями (TELEGRAM), работать с задачами и отображать статус из бэкенда (API).  
+Когда бэкенд активен, фронтенд взаимодействует с ним по HTTP-запросам (GET, POST и т.д.).
+
+
+## Требования
+
+- Node.js
+- npm
+- Доступ к работающему бэкенду (API) для полной работоспособности  
+
+
+## Установка и запуск (локально)
+
+1. Клонируй репозиторий:
+   git clone https://github.com/Tilekdevs/serviceForPublishingAutomation.git
+
+   
+Установи зависимости:
+npm install
+
+Запусти дев-сервер:
+npm run dev
